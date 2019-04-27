@@ -1,0 +1,395 @@
+
+KBSXF.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000001b0  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  00000224  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000007  00800060  00800060  00000224  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  00000224  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000254  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000078  00000000  00000000  00000290  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   000007c8  00000000  00000000  00000308  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 000005d1  00000000  00000000  00000ad0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   000003a0  00000000  00000000  000010a1  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  000000d8  00000000  00000000  00001444  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000428  00000000  00000000  0000151c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000109  00000000  00000000  00001944  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000058  00000000  00000000  00001a4d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0a c0       	rjmp	.+20     	; 0x16 <__ctors_end>
+   2:	22 c0       	rjmp	.+68     	; 0x48 <__vector_1>
+   4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
+   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	1a c0       	rjmp	.+52     	; 0x46 <__bad_interrupt>
+  12:	19 c0       	rjmp	.+50     	; 0x46 <__bad_interrupt>
+
+00000014 <__ctors_start>:
+  14:	cc 00       	.word	0x00cc	; ????
+
+00000016 <__ctors_end>:
+  16:	11 24       	eor	r1, r1
+  18:	1f be       	out	0x3f, r1	; 63
+  1a:	cf e9       	ldi	r28, 0x9F	; 159
+  1c:	cd bf       	out	0x3d, r28	; 61
+
+0000001e <__do_clear_bss>:
+  1e:	20 e0       	ldi	r18, 0x00	; 0
+  20:	a0 e6       	ldi	r26, 0x60	; 96
+  22:	b0 e0       	ldi	r27, 0x00	; 0
+  24:	01 c0       	rjmp	.+2      	; 0x28 <.do_clear_bss_start>
+
+00000026 <.do_clear_bss_loop>:
+  26:	1d 92       	st	X+, r1
+
+00000028 <.do_clear_bss_start>:
+  28:	a7 36       	cpi	r26, 0x67	; 103
+  2a:	b2 07       	cpc	r27, r18
+  2c:	e1 f7       	brne	.-8      	; 0x26 <.do_clear_bss_loop>
+
+0000002e <__do_global_ctors>:
+  2e:	10 e0       	ldi	r17, 0x00	; 0
+  30:	cb e0       	ldi	r28, 0x0B	; 11
+  32:	d0 e0       	ldi	r29, 0x00	; 0
+  34:	03 c0       	rjmp	.+6      	; 0x3c <__do_global_ctors+0xe>
+  36:	21 97       	sbiw	r28, 0x01	; 1
+  38:	fe 01       	movw	r30, r28
+  3a:	b2 d0       	rcall	.+356    	; 0x1a0 <__tablejump2__>
+  3c:	ca 30       	cpi	r28, 0x0A	; 10
+  3e:	d1 07       	cpc	r29, r17
+  40:	d1 f7       	brne	.-12     	; 0x36 <__do_global_ctors+0x8>
+  42:	8c d0       	rcall	.+280    	; 0x15c <main>
+  44:	b3 c0       	rjmp	.+358    	; 0x1ac <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <__vector_1>:
+bool ps2Keyboard_BreakActive;
+int value;
+
+
+// The ISR for the external interrupt
+ISR(INT0_vect) {
+  48:	1f 92       	push	r1
+  4a:	0f 92       	push	r0
+  4c:	0f b6       	in	r0, 0x3f	; 63
+  4e:	0f 92       	push	r0
+  50:	11 24       	eor	r1, r1
+  52:	2f 93       	push	r18
+  54:	3f 93       	push	r19
+  56:	8f 93       	push	r24
+  58:	9f 93       	push	r25
+	//int value = digitalRead(ps2Keyboard_DataPin);
+	
+	if((PINB & 0x01)==0)	// Code if thay cho dong tren trong arduino
+  5a:	b0 99       	sbic	0x16, 0	; 22
+  5c:	05 c0       	rjmp	.+10     	; 0x68 <__vector_1+0x20>
+	{
+		value = 0;
+  5e:	10 92 61 00 	sts	0x0061, r1	; 0x800061 <_edata+0x1>
+  62:	10 92 60 00 	sts	0x0060, r1	; 0x800060 <_edata>
+  66:	06 c0       	rjmp	.+12     	; 0x74 <__vector_1+0x2c>
+	}
+	else value = 1;
+  68:	81 e0       	ldi	r24, 0x01	; 1
+  6a:	90 e0       	ldi	r25, 0x00	; 0
+  6c:	90 93 61 00 	sts	0x0061, r25	; 0x800061 <_edata+0x1>
+  70:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+	
+	
+	if(ps2Keyboard_BufferPos > 0 && ps2Keyboard_BufferPos < 9) {
+  74:	80 91 63 00 	lds	r24, 0x0063	; 0x800063 <ps2Keyboard_BufferPos>
+  78:	9f ef       	ldi	r25, 0xFF	; 255
+  7a:	98 0f       	add	r25, r24
+  7c:	98 30       	cpi	r25, 0x08	; 8
+  7e:	80 f4       	brcc	.+32     	; 0xa0 <__stack+0x1>
+		ps2Keyboard_CurrentBuffer |= (value << (ps2Keyboard_BufferPos - 1));
+  80:	20 91 60 00 	lds	r18, 0x0060	; 0x800060 <_edata>
+  84:	30 91 61 00 	lds	r19, 0x0061	; 0x800061 <_edata+0x1>
+  88:	9f ef       	ldi	r25, 0xFF	; 255
+  8a:	98 0f       	add	r25, r24
+  8c:	02 c0       	rjmp	.+4      	; 0x92 <__vector_1+0x4a>
+  8e:	22 0f       	add	r18, r18
+  90:	33 1f       	adc	r19, r19
+  92:	9a 95       	dec	r25
+  94:	e2 f7       	brpl	.-8      	; 0x8e <__vector_1+0x46>
+  96:	90 91 65 00 	lds	r25, 0x0065	; 0x800065 <ps2Keyboard_CurrentBuffer>
+  9a:	29 2b       	or	r18, r25
+  9c:	20 93 65 00 	sts	0x0065, r18	; 0x800065 <ps2Keyboard_CurrentBuffer>
+	}
+	
+	ps2Keyboard_BufferPos++;
+  a0:	8f 5f       	subi	r24, 0xFF	; 255
+  a2:	80 93 63 00 	sts	0x0063, r24	; 0x800063 <ps2Keyboard_BufferPos>
+	
+	if(ps2Keyboard_BufferPos == 11) {	// Loai bo them 2 ky tu break
+  a6:	8b 30       	cpi	r24, 0x0B	; 11
+  a8:	a9 f4       	brne	.+42     	; 0xd4 <__stack+0x35>
+		if(ps2Keyboard_CurrentBuffer == PS2_KC_BREAK) {
+  aa:	80 91 65 00 	lds	r24, 0x0065	; 0x800065 <ps2Keyboard_CurrentBuffer>
+  ae:	80 3f       	cpi	r24, 0xF0	; 240
+  b0:	21 f4       	brne	.+8      	; 0xba <__stack+0x1b>
+			ps2Keyboard_BreakActive = true;
+  b2:	81 e0       	ldi	r24, 0x01	; 1
+  b4:	80 93 62 00 	sts	0x0062, r24	; 0x800062 <ps2Keyboard_BreakActive>
+  b8:	09 c0       	rjmp	.+18     	; 0xcc <__stack+0x2d>
+			} else if(ps2Keyboard_BreakActive) {
+  ba:	90 91 62 00 	lds	r25, 0x0062	; 0x800062 <ps2Keyboard_BreakActive>
+  be:	99 23       	and	r25, r25
+  c0:	19 f0       	breq	.+6      	; 0xc8 <__stack+0x29>
+			ps2Keyboard_BreakActive = false;
+  c2:	10 92 62 00 	sts	0x0062, r1	; 0x800062 <ps2Keyboard_BreakActive>
+  c6:	02 c0       	rjmp	.+4      	; 0xcc <__stack+0x2d>
+			} else {
+			ps2Keyboard_CharBuffer = ps2Keyboard_CurrentBuffer;
+  c8:	80 93 64 00 	sts	0x0064, r24	; 0x800064 <ps2Keyboard_CharBuffer>
+			
+		}
+
+		ps2Keyboard_CurrentBuffer = 0;
+  cc:	10 92 65 00 	sts	0x0065, r1	; 0x800065 <ps2Keyboard_CurrentBuffer>
+		ps2Keyboard_BufferPos = 0;
+  d0:	10 92 63 00 	sts	0x0063, r1	; 0x800063 <ps2Keyboard_BufferPos>
+	}
+
+}
+  d4:	9f 91       	pop	r25
+  d6:	8f 91       	pop	r24
+  d8:	3f 91       	pop	r19
+  da:	2f 91       	pop	r18
+  dc:	0f 90       	pop	r0
+  de:	0f be       	out	0x3f, r0	; 63
+  e0:	0f 90       	pop	r0
+  e2:	1f 90       	pop	r1
+  e4:	18 95       	reti
+
+000000e6 <_ZN11PS2KeyboardC1Ev>:
+
+PS2Keyboard::PS2Keyboard() {
+  e6:	08 95       	ret
+
+000000e8 <_ZN11PS2Keyboard5beginEv>:
+	// nothing to do here
+}
+
+void PS2Keyboard::begin() {
+	// Prepare the global variables
+	ps2Keyboard_CurrentBuffer = 0;
+  e8:	10 92 65 00 	sts	0x0065, r1	; 0x800065 <ps2Keyboard_CurrentBuffer>
+	ps2Keyboard_CharBuffer = 0;
+  ec:	10 92 64 00 	sts	0x0064, r1	; 0x800064 <ps2Keyboard_CharBuffer>
+	ps2Keyboard_BufferPos = 0;
+  f0:	10 92 63 00 	sts	0x0063, r1	; 0x800063 <ps2Keyboard_BufferPos>
+	ps2Keyboard_BreakActive = false;
+  f4:	10 92 62 00 	sts	0x0062, r1	; 0x800062 <ps2Keyboard_BreakActive>
+  f8:	08 95       	ret
+
+000000fa <_ZN11PS2Keyboard9availableEv>:
+
+}
+
+bool PS2Keyboard::available() {
+	return ps2Keyboard_CharBuffer != 0;
+  fa:	90 91 64 00 	lds	r25, 0x0064	; 0x800064 <ps2Keyboard_CharBuffer>
+  fe:	81 e0       	ldi	r24, 0x01	; 1
+ 100:	91 11       	cpse	r25, r1
+ 102:	01 c0       	rjmp	.+2      	; 0x106 <_ZN11PS2Keyboard9availableEv+0xc>
+ 104:	80 e0       	ldi	r24, 0x00	; 0
+}
+ 106:	08 95       	ret
+
+00000108 <_ZN11PS2Keyboard4readEv>:
+
+uint8_t PS2Keyboard::read() {
+	uint8_t result = ps2Keyboard_CharBuffer;
+ 108:	80 91 64 00 	lds	r24, 0x0064	; 0x800064 <ps2Keyboard_CharBuffer>
+
+	ps2Keyboard_CharBuffer = 0;
+ 10c:	10 92 64 00 	sts	0x0064, r1	; 0x800064 <ps2Keyboard_CharBuffer>
+	
+	return result;
+}
+ 110:	08 95       	ret
+
+00000112 <_Z11bit_bang_txh>:
+
+void bit_bang_tx(uint8_t data) {
+	int i;
+	cbi(PORTB,UART_PIN_BIT);   // start bit
+ 112:	c2 98       	cbi	0x18, 2	; 24
+	TCNT0 = 0;						// timer to 0
+ 114:	12 be       	out	0x32, r1	; 50
+	while (TCNT0 < uart_delay); // delay
+ 116:	92 b7       	in	r25, 0x32	; 50
+ 118:	9e 30       	cpi	r25, 0x0E	; 14
+ 11a:	e8 f3       	brcs	.-6      	; 0x116 <_Z11bit_bang_txh+0x4>
+ 11c:	20 e0       	ldi	r18, 0x00	; 0
+ 11e:	30 e0       	ldi	r19, 0x00	; 0
+	//------ 1 or 0 to serial port-----------
+	for (i = 0; i < 8; i++) {
+		if (data & (0x01 << i)) uart_PORT |= (1<<uart_PIN);
+ 120:	48 2f       	mov	r20, r24
+ 122:	50 e0       	ldi	r21, 0x00	; 0
+ 124:	ca 01       	movw	r24, r20
+ 126:	02 2e       	mov	r0, r18
+ 128:	02 c0       	rjmp	.+4      	; 0x12e <_Z11bit_bang_txh+0x1c>
+ 12a:	95 95       	asr	r25
+ 12c:	87 95       	ror	r24
+ 12e:	0a 94       	dec	r0
+ 130:	e2 f7       	brpl	.-8      	; 0x12a <_Z11bit_bang_txh+0x18>
+ 132:	80 ff       	sbrs	r24, 0
+ 134:	02 c0       	rjmp	.+4      	; 0x13a <_Z11bit_bang_txh+0x28>
+ 136:	c2 9a       	sbi	0x18, 2	; 24
+ 138:	01 c0       	rjmp	.+2      	; 0x13c <_Z11bit_bang_txh+0x2a>
+		else cbi(PORTB,UART_PIN_BIT);
+ 13a:	c2 98       	cbi	0x18, 2	; 24
+		//---------------------------------------
+		while (TCNT0 < uart_delay); // delay
+ 13c:	82 b7       	in	r24, 0x32	; 50
+ 13e:	8e 30       	cpi	r24, 0x0E	; 14
+ 140:	e8 f3       	brcs	.-6      	; 0x13c <_Z11bit_bang_txh+0x2a>
+	int i;
+	cbi(PORTB,UART_PIN_BIT);   // start bit
+	TCNT0 = 0;						// timer to 0
+	while (TCNT0 < uart_delay); // delay
+	//------ 1 or 0 to serial port-----------
+	for (i = 0; i < 8; i++) {
+ 142:	2f 5f       	subi	r18, 0xFF	; 255
+ 144:	3f 4f       	sbci	r19, 0xFF	; 255
+ 146:	28 30       	cpi	r18, 0x08	; 8
+ 148:	31 05       	cpc	r19, r1
+ 14a:	61 f7       	brne	.-40     	; 0x124 <_Z11bit_bang_txh+0x12>
+		if (data & (0x01 << i)) uart_PORT |= (1<<uart_PIN);
+		else cbi(PORTB,UART_PIN_BIT);
+		//---------------------------------------
+		while (TCNT0 < uart_delay); // delay
+	}
+	sbi(PORTB,UART_PIN_BIT);       // stop bit
+ 14c:	c2 9a       	sbi	0x18, 2	; 24
+	while (TCNT0 < uart_delay);  // delay
+ 14e:	82 b7       	in	r24, 0x32	; 50
+ 150:	8e 30       	cpi	r24, 0x0E	; 14
+ 152:	e8 f3       	brcs	.-6      	; 0x14e <_Z11bit_bang_txh+0x3c>
+}
+ 154:	08 95       	ret
+
+00000156 <_Z9uart_initv>:
+
+void uart_init() {
+	sbi(DDRB,UART_PIN_BIT);
+ 156:	ba 9a       	sbi	0x17, 2	; 23
+	sbi(PORTB,UART_PIN_BIT);
+ 158:	c2 9a       	sbi	0x18, 2	; 24
+ 15a:	08 95       	ret
+
+0000015c <main>:
+#include "KBSXF.h"
+
+PS2Keyboard keyboard;
+
+int main() {
+	keyboard.begin();
+ 15c:	86 e6       	ldi	r24, 0x66	; 102
+ 15e:	90 e0       	ldi	r25, 0x00	; 0
+ 160:	c3 df       	rcall	.-122    	; 0xe8 <_ZN11PS2Keyboard5beginEv>
+	
+	//Setup for USB KEYBOARD
+	cbi(DDRB,0);
+ 162:	b8 98       	cbi	0x17, 0	; 23
+	cbi(DDRB,1);
+ 164:	b9 98       	cbi	0x17, 1	; 23
+
+	sbi(PORTB,0);	
+ 166:	c0 9a       	sbi	0x18, 0	; 24
+	sbi(PORTB,1);
+ 168:	c1 9a       	sbi	0x18, 1	; 24
+	
+	//Setup INT
+	GIMSK |= (1 << INT0);
+ 16a:	8b b7       	in	r24, 0x3b	; 59
+ 16c:	80 64       	ori	r24, 0x40	; 64
+ 16e:	8b bf       	out	0x3b, r24	; 59
+	MCUCR |= (1 << ISC01);
+ 170:	85 b7       	in	r24, 0x35	; 53
+ 172:	82 60       	ori	r24, 0x02	; 2
+ 174:	85 bf       	out	0x35, r24	; 53
+	sei();
+ 176:	78 94       	sei
+	
+	
+	// Setup Timer for UART
+	TCCR0A = 0x02;  // CTC
+ 178:	82 e0       	ldi	r24, 0x02	; 2
+ 17a:	8f bd       	out	0x2f, r24	; 47
+	TCCR0B = 0x02;  // prescaller 8
+ 17c:	83 bf       	out	0x33, r24	; 51
+	OCR0A  = uart_delay;  // ... delay
+ 17e:	8e e0       	ldi	r24, 0x0E	; 14
+ 180:	86 bf       	out	0x36, r24	; 54
+	uart_init(); // init ;)
+ 182:	e9 df       	rcall	.-46     	; 0x156 <_Z9uart_initv>
+	{
+		
+		//bit_bang_tx('X');
+		//_delay_ms(100);
+		
+		if(keyboard.available()) {
+ 184:	86 e6       	ldi	r24, 0x66	; 102
+ 186:	90 e0       	ldi	r25, 0x00	; 0
+ 188:	b8 df       	rcall	.-144    	; 0xfa <_ZN11PS2Keyboard9availableEv>
+ 18a:	88 23       	and	r24, r24
+ 18c:	d9 f3       	breq	.-10     	; 0x184 <main+0x28>
+			uint8_t dat = keyboard.read();
+ 18e:	86 e6       	ldi	r24, 0x66	; 102
+ 190:	90 e0       	ldi	r25, 0x00	; 0
+ 192:	ba df       	rcall	.-140    	; 0x108 <_ZN11PS2Keyboard4readEv>
+			bit_bang_tx(dat);
+ 194:	be df       	rcall	.-132    	; 0x112 <_Z11bit_bang_txh>
+ 196:	f6 cf       	rjmp	.-20     	; 0x184 <main+0x28>
+
+00000198 <_GLOBAL__sub_I_keyboard>:
+ * Author : Xiu
+ */ 
+
+#include "KBSXF.h"
+
+PS2Keyboard keyboard;
+ 198:	86 e6       	ldi	r24, 0x66	; 102
+ 19a:	90 e0       	ldi	r25, 0x00	; 0
+ 19c:	a4 df       	rcall	.-184    	; 0xe6 <_ZN11PS2KeyboardC1Ev>
+ 19e:	08 95       	ret
+
+000001a0 <__tablejump2__>:
+ 1a0:	ee 0f       	add	r30, r30
+ 1a2:	ff 1f       	adc	r31, r31
+ 1a4:	05 90       	lpm	r0, Z+
+ 1a6:	f4 91       	lpm	r31, Z
+ 1a8:	e0 2d       	mov	r30, r0
+ 1aa:	09 94       	ijmp
+
+000001ac <_exit>:
+ 1ac:	f8 94       	cli
+
+000001ae <__stop_program>:
+ 1ae:	ff cf       	rjmp	.-2      	; 0x1ae <__stop_program>
